@@ -1,0 +1,12 @@
+{
+  "name": "MMM-SleepIQControl",
+  "version": "1.0.0",
+  "description": "MagicMirror module to control SleepIQ beds.",
+  "main": "MMM-SleepIQControl.js",
+  "author": "Buzz Kc",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
