@@ -9,6 +9,7 @@
 
 Module.register("MMM-SleepIQControl", {
 	defaults: {
+		title: 'SleepIQ Control',
 		updateInterval: 300000,
 		retryDelay: 5000,
 		username: '',
@@ -17,11 +18,15 @@ Module.register("MMM-SleepIQControl", {
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
+	bedData: null,
+	foundationData: null,
+	sleeperData: null,
 
 	start: function() {
 		var self = this;
 		var dataRequest = null;
 		var dataNotification = null;
+		var bed = null;
 
 		//Flag for check if module is loaded
 		this.loaded = false;
@@ -72,33 +77,32 @@ Module.register("MMM-SleepIQControl", {
 	getDom: function() {
 		var self = this;
 
+		/** To-do
+		 * Add UI components
+		 * Update components using global data
+		 * Add Actions to Components
+		 * Refresh ui data upon action completion
+		 */
+
 		// create element wrapper for show into the module
 		var wrapper = document.createElement("div");
 		// If this.dataRequest is not empty
-		if (this.dataRequest) {
+		if (this.sleeperData) {
 			var wrapperDataRequest = document.createElement("div");
-			// check format https://jsonplaceholder.typicode.com/posts/1
-			wrapperDataRequest.innerHTML = this.dataRequest.title;
+			wrapperDataRequest.innerHTML = this.config.title;
 
-			var labelDataRequest = document.createElement("label");
-			// Use translate function
-			//             this id defined in translations files
-			labelDataRequest.innerHTML = this.translate("TITLE");
+			var buttonTable = document.createElement("TABLE");
+			buttonTable.innerHTML = "<table><tr><td><button onclick='this.sendSocketNotification(\"MMM-SleepIQControl_Console\", \"test\");'>Watch Tv</button></td></tr>";
 
-
-			wrapper.appendChild(labelDataRequest);
 			wrapper.appendChild(wrapperDataRequest);
+			wrapper.appendChild(buttonTable);
 		}
 
-		// Data from helper
-		if (this.dataNotification) {
-			var wrapperDataNotification = document.createElement("div");
-			// translations  + datanotification
-			wrapperDataNotification.innerHTML =  this.translate("UPDATE") + ": " + this.dataNotification.date;
-
-			wrapper.appendChild(wrapperDataNotification);
-		}
 		return wrapper;
+	},
+
+	watchTV: function() {
+		console.log("Watch TV");
 	},
 
 	getScripts: function() {
@@ -143,10 +147,27 @@ Module.register("MMM-SleepIQControl", {
 			console.log(payload);
 			this.scheduleUpdate(2000);
 		}
+		if (notification === "MMM-SleepIQControl_BED_DATA_RETURNED") {
+			this.bedData = payload.beds[0];
+			console.log("Bed Data: ");
+			console.log(this.bedData);
+		}
+		if (notification === "MMM-SleepIQControl_FOUNDATION_DATA_RETURNED") {
+			this.foundationData = payload;
+			console.log("Foundation Data: ");
+			console.log(this.foundationData);
+		}
+		if (notification === "MMM-SleepIQControl_SLEEPER_DATA_RETURNED") {
+			this.sleeperData = payload.sleepers;
+			console.log("Sleeper Data: ");
+			console.log(this.sleeperData);
+			this.updateDom();
+		}
 
 		if (notification === "MMM-SleepIQControl_Console") {
 			console.log("Output: ");
 			console.log(payload);
+			//this.bed = payload.beds[0];
 		}
 	},
 });

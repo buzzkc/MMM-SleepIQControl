@@ -29,14 +29,14 @@ module.exports = NodeHelper.create({
 
 			this.api.login()
 				.then((success) => {
-					this.sendSocketNotification("MMM-SleepIQControl_LOGIN_SUCCESS", success);
+					this.sendSocketNotification("MMM-SleepIQControl_LOGIN_SUCCESS", JSON.parse(success));
 				})
 				.catch((err) => {
 					this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 				});
 		}
 		if (notification === "MMM-SleepIQControl_GET_DATA") {
-			this.getData();
+			this.getFamilyStatus();
 		}
 
 		if (notification === "MMM-SleepIQControl_USER_ACTION") {
@@ -44,16 +44,39 @@ module.exports = NodeHelper.create({
 		}
 	},
 
-	getData: function () {
+	getFamilyStatus: function () {
 		this.sendSocketNotification("MMM-SleepIQControl_Console", "getting data");
 		//get familystatus, parse and update ui
 		this.api.familyStatus()
 			.then((success) => {
-				this.sendSocketNotification("MMM-SleepIQControl_Console", success);
+				this.sendSocketNotification("MMM-SleepIQControl_BED_DATA_RETURNED", JSON.parse(success));
+				this.getFoundationStatus();
 			})
 			.catch((err) => {
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
+	},
+
+	getFoundationStatus: function () {
+		this.api.foundationStatus()
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_FOUNDATION_DATA_RETURNED", JSON.parse(success));
+				this.getSleeper();
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+			});
+	},
+
+	getSleeper: function () {
+		this.api.sleeper()
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_SLEEPER_DATA_RETURNED", JSON.parse(success));
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+			});
+
 	},
 
 	setUserAction: function(action) {
