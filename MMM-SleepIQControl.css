@@ -9,19 +9,23 @@
  *
  */
 .platormButton {
-	width: 80px;
-	height: 50px;
+	width: 250px;
+	height: 150px;
 	background-color: #0384fc;
 	border: none;
 	color: white;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 12px;
+	font-size: 1em;
 	margin: 4px 2px;
 	border-radius: 4px;
 }
 
 .sleeperdetails {
-	font-size: 10px;
+	font-size: 1em;
+}
+
+.sleepIQControlCell {
+	width: 33%;
 }

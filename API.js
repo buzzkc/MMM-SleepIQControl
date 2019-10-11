@@ -486,6 +486,58 @@ class API {
         */
     }
 
+    foundationSystem (callback=null) {
+        return request({
+            method: 'GET',
+            uri: 'https://api.sleepiq.sleepnumber.com/rest/bed/'+this.bedID+'/foundation/system',
+            qs: {_k: this.key}
+        }, function(err, resp, data) {
+            if (err) {
+                return callback("foundationSystem GET failed. Error:",err);
+            }
+            this.json = JSON.parse(data);
+            if (callback) {
+                callback(data);
+            }
+        })
+
+        /*
+          {
+            "Error": {
+              "Code": 404,
+              "Message": " No Foundation Device"
+            }
+          }
+          {
+          "fsCurrentPositionPresetRight": "Flat",
+          "fsNeedsHoming": false,
+          "fsRightFootPosition": "00",
+          "fsLeftPositionTimerLSB": "00",
+          "fsTimerPositionPresetLeft": "No timer running, thus no preset to active",
+          "fsCurrentPositionPresetLeft": "Zero G",
+          "fsLeftPositionTimerMSB": "00",
+          "fsRightFootActuatorMotorStatus": "00",
+          "fsCurrentPositionPreset": "54",
+          "fsTimerPositionPresetRight": "No timer running, thus no preset to active",
+          "fsType": "Split King",
+          "fsOutletsOn": false,
+          "fsLeftHeadPosition": "00",
+          "fsIsMoving": true,
+          "fsRightHeadActuatorMotorStatus": "00",
+          "fsStatusSummary": "45",
+          "fsTimerPositionPreset": "00",
+          "fsLeftFootPosition": "00",
+          "fsRightPositionTimerLSB": "00",
+          "fsTimedOutletsOn": false,
+          "fsRightHeadPosition": "00",
+          "fsConfigured": true,
+          "fsRightPositionTimerMSB": "00",
+          "fsLeftHeadActuatorMotorStatus": "01",
+          "fsLeftFootActuatorMotorStatus": "00"
+          }
+        */
+    }
+
     // num must be between 1 and 4, setting is 0 or 1
     outlet (num, setting) {
         return request({

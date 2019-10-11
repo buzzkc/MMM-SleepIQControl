@@ -11,7 +11,6 @@ Module.register("MMM-SleepIQControl", {
 	defaults: {
 		title: 'SleepIQ Control',
 		updateInterval: 300000,
-		retryDelay: 5000,
 		username: '',
 		password: '',
 		primarySleeper: 'left' // left or right
@@ -19,6 +18,7 @@ Module.register("MMM-SleepIQControl", {
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
 	bedData: null,
+	foundationSystemData: null,
 	foundationData: null,
 	sleeperData: null,
 
@@ -90,15 +90,17 @@ Module.register("MMM-SleepIQControl", {
 		if (this.sleeperData) {
 			var wrapperDataRequest = document.createElement("div");
 			wrapperDataRequest.innerHTML = this.config.title;
-			var side = 'left';
+			var side = this.config.primarySleeper;
 			var c, r, t, b;
 			t = document.createElement('table');
 			
 			//row 1
 			r = t.insertRow(0);
 			c = r.insertCell(0);
+			c.setAttribute("class", "sleepIQControlCell");
 			c.innerHTML = "<span class='sleeperdetails'>Sleeper: " + this.sleeperData[1].firstName + "</span>";
 			c = r.insertCell(1);
+			c.setAttribute("class", "sleepIQControlCell");
 			c.innerHTML = "<span class='sleeperdetails'>Sleep Number: " + this.bedData.leftSide.sleepNumber + "</span>";
 			/**
 				FAVORITE = 1
@@ -112,24 +114,30 @@ Module.register("MMM-SleepIQControl", {
 			r = t.insertRow(1); 
 			
 			c = r.insertCell(0);
+			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Favorite", 1));
 
 			c = r.insertCell(1);
+			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Read", 2));
 			
 			c = r.insertCell(2);
+			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Watch Tv", 3));
 			
 			//row 3
 			r = t.insertRow(2); 
 			
 			c = r.insertCell(0);
+			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Flat", 4));
 
 			c = r.insertCell(1);
+			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Zero G", 5));
 			
 			c = r.insertCell(2);
+			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Snore", 6));
 
 			wrapper.appendChild(wrapperDataRequest);
@@ -190,21 +198,31 @@ Module.register("MMM-SleepIQControl", {
 			this.dataNotification = payload;
 			this.updateDom();
 		}
+
 		if (notification === "MMM-SleepIQControl_LOGIN_SUCCESS") {
 			console.log("Output: ");
 			console.log(payload);
 			this.scheduleUpdate(2000);
 		}
+
 		if (notification === "MMM-SleepIQControl_BED_DATA_RETURNED") {
 			this.bedData = payload.beds[0];
 			console.log("Bed Data: ");
 			console.log(this.bedData);
 		}
+
 		if (notification === "MMM-SleepIQControl_FOUNDATION_DATA_RETURNED") {
 			this.foundationData = payload;
 			console.log("Foundation Data: ");
 			console.log(this.foundationData);
 		}
+
+		if (notification === "MMM-SleepIQControl_FOUNDATION_SYS_DATA_RETURNED") {
+			this.foundationSystemData = payload;
+			console.log("Foundation System Data: ");
+			console.log(this.foundationSystemData);
+		}
+
 		if (notification === "MMM-SleepIQControl_SLEEPER_DATA_RETURNED") {
 			this.sleeperData = payload.sleepers;
 			console.log("Sleeper Data: ");

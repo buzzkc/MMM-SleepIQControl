@@ -1,28 +1,55 @@
 # MMM-SleepIQControl
-
 This is a module for the [MagicMirror²](https://github.com/MichMich/MagicMirror/).
 
-MagicMirror module to control SleepIQ beds.
+A MagicMirror module for controlling sleep number beds on a touch screen.
 
-## Using the module
+![](./images/MMM-SleepIQControl.png)
+
+
+## Installation
+### Setup the MagicMirror module
+~MagicMirror/modules
+
+git clone https://github.com/buzzkc/MMM-SleepIQControl.git
+
+
+### Using the module
 
 To use this module, add the following configuration block to the modules array in the `config/config.js` file:
 ```js
 var config = {
     modules: [
         {
-            module: 'MMM-SleepIQControl',
-            config: {
-                // See below for configurable options
-            }
-        }
+              module: "MMM-SleepIQControl",
+              position: "middle_center,
+              config: {
+                    username: "yourSleepNumberUserName",
+                    password: "yourSleepNumberPassword",
+                    primarySleeper: "left", // "left" or "right"
+              }
+        },
     ]
 }
 ```
 
-## Configuration options
+### Configuration options
 
-| Option           | Description
-|----------------- |-----------
-| `option1`        | *Required* DESCRIPTION HERE
-| `option2`        | *Optional* DESCRIPTION HERE TOO <br><br>**Type:** `int`(milliseconds) <br>Default 60000 milliseconds (1 minute)
+| Option            | Description
+|-----------------  |-----------
+| `username`        | *Required* Your username to login to sleepIQ
+| `password`        | *Required* Your password to login to sleepIQ
+| `title`           | *Optional* Title for the module
+| `updateInterval`  | *Optional* Update frequency, default: 300000 <*Int*> (5 minutes)
+| `primarySleeper`  | *Optional* Primary Sleeper to display, 'left' or 'right', default: 'left' 
+|                   |
+
+## Future enhancements
+* Add SleepNumber adjustment (duh)
+* Add Sleeper selector
+* Add Foot warmer options
+* Add Massage options
+* Add Light options
+
+## Thanks To
+* MichMich for developing [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
+* DeeeeLAN for the [API.js](https://github.com/DeeeeLAN/homebridge-sleepiq/blob/master/API.js) library 
