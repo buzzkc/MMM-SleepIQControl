@@ -80,8 +80,13 @@ module.exports = NodeHelper.create({
 	},
 
 	setUserAction: function(action) {
-		this.sendSocketNotification("MMM-SleepIQControl_Console", "getting data");
-		//get familystatus, parse and update ui
+		this.api.preset('L', action)
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_FOUNDATION_ACTION_RETURNED", JSON.parse(success));
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+			});
 	},
 
 	// Example function send notification test

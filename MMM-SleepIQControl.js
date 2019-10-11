@@ -90,19 +90,67 @@ Module.register("MMM-SleepIQControl", {
 		if (this.sleeperData) {
 			var wrapperDataRequest = document.createElement("div");
 			wrapperDataRequest.innerHTML = this.config.title;
+			var side = 'left';
+			var c, r, t, b;
+			t = document.createElement('table');
+			
+			//row 1
+			r = t.insertRow(0);
+			c = r.insertCell(0);
+			c.innerHTML = "<span class='sleeperdetails'>Sleeper: " + this.sleeperData[1].firstName + "</span>";
+			c = r.insertCell(1);
+			c.innerHTML = "<span class='sleeperdetails'>Sleep Number: " + this.bedData.leftSide.sleepNumber + "</span>";
+			/**
+				FAVORITE = 1
+				READ = 2
+				WATCH_TV = 3
+				FLAT = 4
+				ZERO_G = 5
+				SNORE = 6
+			*/ 
+			//row 2
+			r = t.insertRow(1); 
+			
+			c = r.insertCell(0);
+			c.appendChild(this.addButton("Favorite", 1));
 
-			var buttonTable = document.createElement("TABLE");
-			buttonTable.innerHTML = "<table><tr><td><button onclick='this.sendSocketNotification(\"MMM-SleepIQControl_Console\", \"test\");'>Watch Tv</button></td></tr>";
+			c = r.insertCell(1);
+			c.appendChild(this.addButton("Read", 2));
+			
+			c = r.insertCell(2);
+			c.appendChild(this.addButton("Watch Tv", 3));
+			
+			//row 3
+			r = t.insertRow(2); 
+			
+			c = r.insertCell(0);
+			c.appendChild(this.addButton("Flat", 4));
+
+			c = r.insertCell(1);
+			c.appendChild(this.addButton("Zero G", 5));
+			
+			c = r.insertCell(2);
+			c.appendChild(this.addButton("Snore", 6));
 
 			wrapper.appendChild(wrapperDataRequest);
-			wrapper.appendChild(buttonTable);
+			wrapper.appendChild(t);
 		}
 
 		return wrapper;
 	},
-
-	watchTV: function() {
-		console.log("Watch TV");
+	
+	addButton: function(innerHtml, value) {
+		var b = document.createElement("button");
+		b.innerHTML = innerHtml
+		b.addEventListener("click", () => this.adjustPlatform(value));
+		b.setAttribute("id", innerHtml.trim());
+		b.setAttribute("class","platormButton");
+		return b;
+	},
+	
+	adjustPlatform: function(level) {
+		console.log("Adjust platform to " + level);
+		this.sendSocketNotification("MMM-SleepIQControl_USER_ACTION", level)
 	},
 
 	getScripts: function() {
@@ -162,6 +210,12 @@ Module.register("MMM-SleepIQControl", {
 			console.log("Sleeper Data: ");
 			console.log(this.sleeperData);
 			this.updateDom();
+		}
+		
+		if (notification === "MMM-SleepIQControl_FOUNDATION_ACTION_RETURNED") {
+			console.log("Foundation Action Status: ");
+			console.log(payload);
+			this.sendSocketNotification('MMM-SleepIQControl_GET_DATA', null);
 		}
 
 		if (notification === "MMM-SleepIQControl_Console") {
