@@ -150,10 +150,10 @@ Module.register("MMM-SleepIQControl", {
 	
 	addButton: function(innerHtml, value) {
 		var b = document.createElement("button");
-		b.innerHTML = innerHtml
+		b.innerHTML = "<img class='platformButtonImg' src='./modules/MMM-SleepIQControl/images/" +innerHtml.toLowerCase().trim().replace(/\s+/g, '') + ".png'><br>" +innerHtml;
 		b.addEventListener("click", () => this.adjustPlatform(value));
 		b.setAttribute("id", innerHtml.trim());
-		b.setAttribute("class","platormButton");
+		b.setAttribute("class","platformButton");
 		return b;
 	},
 	
