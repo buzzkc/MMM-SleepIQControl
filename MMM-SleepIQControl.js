@@ -17,6 +17,7 @@ Module.register("MMM-SleepIQControl", {
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
+	accountData: null,
 	bedData: null,
 	foundationSystemData: null,
 	foundationData: null,
@@ -89,7 +90,7 @@ Module.register("MMM-SleepIQControl", {
 		// If this.dataRequest is not empty
 		if (this.sleeperData) {
 			var wrapperDataRequest = document.createElement("div");
-			wrapperDataRequest.innerHTML = this.config.title;
+			wrapperDataRequest.innerHTML = this.accountData.name;
 			var side = this.config.primarySleeper;
 			var c, r, t, b;
 			t = document.createElement('table');
@@ -203,6 +204,12 @@ Module.register("MMM-SleepIQControl", {
 			console.log("Output: ");
 			console.log(payload);
 			this.scheduleUpdate(2000);
+		}
+
+		if (notification === "MMM-SleepIQControl_ACCT_DATA_RETURNED") {
+			this.accountData = payload.beds[0];
+			console.log("Account Data: ");
+			console.log(this.accountData);
 		}
 
 		if (notification === "MMM-SleepIQControl_BED_DATA_RETURNED") {

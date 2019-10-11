@@ -36,12 +36,25 @@ module.exports = NodeHelper.create({
 				});
 		}
 		if (notification === "MMM-SleepIQControl_GET_DATA") {
-			this.getFamilyStatus();
+			this.getAccountData();
 		}
 
 		if (notification === "MMM-SleepIQControl_USER_ACTION") {
 			this.setUserAction(payload);
 		}
+	},
+
+	getAccountData: function () {
+		this.sendSocketNotification("MMM-SleepIQControl_Console", "getting data");
+		//get familystatus, parse and update ui
+		this.api.bed()
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_ACCT_DATA_RETURNED", JSON.parse(success));
+				this.getFamilyStatus();
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+			});
 	},
 
 	getFamilyStatus: function () {
