@@ -104,7 +104,10 @@ module.exports = NodeHelper.create({
 	},
 
 	setUserAction: function(action) {
-		this.api.preset('L', action)
+		var side = 'R';
+		if (this.config.primarySleeper === 'left') side = 'L';
+
+		this.api.preset(side, action)
 			.then((success) => {
 				this.sendSocketNotification("MMM-SleepIQControl_FOUNDATION_ACTION_RETURNED", JSON.parse(success));
 			})

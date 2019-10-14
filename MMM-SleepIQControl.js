@@ -94,15 +94,24 @@ Module.register("MMM-SleepIQControl", {
 			var side = this.config.primarySleeper;
 			var c, r, t, b;
 			t = document.createElement('table');
-			
+
 			//row 1
 			r = t.insertRow(0);
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.innerHTML = "<span class='sleeperdetails'>Sleeper: " + this.sleeperData[1].firstName + "</span>";
+			if (this.config.primarySleeper === 'right') {
+					c.innerHTML = "<span class='sleeperdetails'>Sleeper: " + this.sleeperData[0].firstName + "</span>";
+			} else {
+					c.innerHTML = "<span class='sleeperdetails'>Sleeper: " + this.sleeperData[1].firstName + "</span>";
+			}
 			c = r.insertCell(1);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.innerHTML = "<span class='sleeperdetails'>Sleep Number: " + this.bedData.leftSide.sleepNumber + "</span>";
+			if (this.config.primarySleeper === 'right') {
+					c.innerHTML = "<span class='sleeperdetails'>Sleep Number: " + this.bedData.rightSide.sleepNumber + "</span>";
+
+			} else {
+			    c.innerHTML = "<span class='sleeperdetails'>Sleep Number: " + this.bedData.leftSide.sleepNumber + "</span>";
+		  }
 			/**
 				FAVORITE = 1
 				READ = 2
@@ -110,10 +119,10 @@ Module.register("MMM-SleepIQControl", {
 				FLAT = 4
 				ZERO_G = 5
 				SNORE = 6
-			*/ 
+			*/
 			//row 2
-			r = t.insertRow(1); 
-			
+			r = t.insertRow(1);
+
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Favorite", 1));
@@ -121,14 +130,14 @@ Module.register("MMM-SleepIQControl", {
 			c = r.insertCell(1);
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Read", 2));
-			
+
 			c = r.insertCell(2);
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Watch Tv", 3));
-			
+
 			//row 3
-			r = t.insertRow(2); 
-			
+			r = t.insertRow(2);
+
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Flat", 4));
@@ -136,7 +145,7 @@ Module.register("MMM-SleepIQControl", {
 			c = r.insertCell(1);
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Zero G", 5));
-			
+
 			c = r.insertCell(2);
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Snore", 6));
@@ -147,7 +156,7 @@ Module.register("MMM-SleepIQControl", {
 
 		return wrapper;
 	},
-	
+
 	addButton: function(innerHtml, value) {
 		var b = document.createElement("button");
 		b.innerHTML = "<img class='platformButtonImg' src='./modules/MMM-SleepIQControl/images/" +innerHtml.toLowerCase().trim().replace(/\s+/g, '') + ".png'><br>" +innerHtml;
@@ -156,7 +165,7 @@ Module.register("MMM-SleepIQControl", {
 		b.setAttribute("class","platformButton");
 		return b;
 	},
-	
+
 	adjustPlatform: function(level) {
 		console.log("Adjust platform to " + level);
 		this.sendSocketNotification("MMM-SleepIQControl_USER_ACTION", level)
@@ -236,7 +245,7 @@ Module.register("MMM-SleepIQControl", {
 			console.log(this.sleeperData);
 			this.updateDom();
 		}
-		
+
 		if (notification === "MMM-SleepIQControl_FOUNDATION_ACTION_RETURNED") {
 			console.log("Foundation Action Status: ");
 			console.log(payload);
