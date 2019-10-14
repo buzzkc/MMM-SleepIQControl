@@ -88,7 +88,8 @@ module.exports = NodeHelper.create({
 				this.getSleeper();
 			})
 			.catch((err) => {
-				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+				this.sendSocketNotification("MMM-SleepIQControl_Console", JSON.parse(err));
+				this.sendSocketNotification("MMM-SleepIQControl_FOUNDATION_DATA_ERROR", JSON.parse(err));
 			});
 	},
 
