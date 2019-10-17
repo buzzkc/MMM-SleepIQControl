@@ -92,6 +92,9 @@ Module.register("MMM-SleepIQControl", {
 			var wrapperDataRequest = document.createElement("div");
 			wrapperDataRequest.innerHTML = this.accountData.name;
 			var side = this.config.primarySleeper;
+			var currentPosition = this.foundationData.fsCurrentPositionPresetLeft
+			if (side === 'right') currentPosition = this.foundationData.fsCurrentPositionPresetRight
+			console.log("currentPosition: " + currentPosition);
 			var c, r, t, b;
 			t = document.createElement('table');
 
@@ -116,7 +119,7 @@ Module.register("MMM-SleepIQControl", {
 				FAVORITE = 1
 				READ = 2
 				WATCH_TV = 3
-				FLAT = 4
+				FLAT = 4dt
 				ZERO_G = 5
 				SNORE = 6
 			*/
@@ -125,44 +128,48 @@ Module.register("MMM-SleepIQControl", {
 
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addButton("Favorite", 1));
+			c.appendChild(this.addButton("Favorite", 1, currentPosition));
 
 			c = r.insertCell(1);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addButton("Read", 2));
+			c.appendChild(this.addButton("Read", 2, currentPosition));
 
 			c = r.insertCell(2);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addButton("Watch Tv", 3));
+			c.appendChild(this.addButton("Watch TV", 3, currentPosition));
 
 			//row 3
 			r = t.insertRow(2);
 
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addButton("Flat", 4));
+			c.appendChild(this.addButton("Flat", 4, currentPosition));
 
 			c = r.insertCell(1);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addButton("Zero G", 5));
+			c.appendChild(this.addButton("Zero G", 5, currentPosition));
 
 			c = r.insertCell(2);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addButton("Snore", 6));
+			c.appendChild(this.addButton("Snore", 6, currentPosition));
 
 			wrapper.appendChild(wrapperDataRequest);
 			wrapper.appendChild(t);
+
+
 		}
 
 		return wrapper;
 	},
 
-	addButton: function(innerHtml, value) {
+	addButton: function(innerHtml, value, currentPosition) {
 		var b = document.createElement("button");
 		b.innerHTML = "<img class='platformButtonImg' src='./modules/MMM-SleepIQControl/images/" +innerHtml.toLowerCase().trim().replace(/\s+/g, '') + ".png'><br>" +innerHtml;
 		b.addEventListener("click", () => this.adjustPlatform(value));
-		b.setAttribute("id", innerHtml.trim());
-		b.setAttribute("class","platformButton");
+		b.setAttribute("id", innerHtml.toLowerCase().trim().replace(/\s+/g, '') + "Button");
+		var currentPositionCSS = '';
+		if (currentPosition === innerHtml) currentPositionCSS = 'currentFoundationSetting '
+		b.setAttribute("class", currentPositionCSS + "platformButton");
 		return b;
 	},
 

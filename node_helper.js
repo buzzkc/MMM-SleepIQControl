@@ -63,7 +63,7 @@ module.exports = NodeHelper.create({
 		this.api.familyStatus()
 			.then((success) => {
 				this.sendSocketNotification("MMM-SleepIQControl_BED_DATA_RETURNED", JSON.parse(success));
-				this.getFoundationSystem();
+				this.getFoundationStatus();
 			})
 			.catch((err) => {
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
