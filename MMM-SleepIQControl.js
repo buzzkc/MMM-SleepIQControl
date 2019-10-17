@@ -21,6 +21,7 @@ Module.register("MMM-SleepIQControl", {
 	bedData: null,
 	foundationSystemData: null,
 	foundationData: null,
+	foundationError: true,
 	sleeperData: null,
 
 	start: function() {
@@ -87,8 +88,11 @@ Module.register("MMM-SleepIQControl", {
 
 		// create element wrapper for show into the module
 		var wrapper = document.createElement("div");
+		if (this.foundationError === true) {
+			wrapper.innerHTML = "<span class='sleepIQFoundationError'>Unable to communicate with foundation.</span>";
+		}
 		// If this.dataRequest is not empty
-		if (this.sleeperData) {
+		else if (this.sleeperData) {
 			var wrapperDataRequest = document.createElement("div");
 			wrapperDataRequest.innerHTML = this.accountData.name;
 			var side = this.config.primarySleeper;
@@ -236,14 +240,21 @@ Module.register("MMM-SleepIQControl", {
 
 		if (notification === "MMM-SleepIQControl_FOUNDATION_DATA_RETURNED") {
 			this.foundationData = payload;
+			this.foundationError = false;
 			console.log("Foundation Data: ");
 			console.log(this.foundationData);
 		}
 
 		if (notification === "MMM-SleepIQControl_FOUNDATION_SYS_DATA_RETURNED") {
 			this.foundationSystemData = payload;
+			this.foundationError = true;
 			console.log("Foundation System Data: ");
 			console.log(this.foundationSystemData);
+		}
+
+		if (notification === "MMM-SleepIQControl_FOUNDATION_DATA_ERROR") {
+			this.foundationSystemData = payload;
+			this.updateDom();
 		}
 
 		if (notification === "MMM-SleepIQControl_SLEEPER_DATA_RETURNED") {
