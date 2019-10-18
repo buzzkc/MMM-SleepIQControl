@@ -23,6 +23,7 @@ Module.register("MMM-SleepIQControl", {
 	foundationData: null,
 	foundationError: true,
 	sleeperData: null,
+	currentAction: null,
 
 	start: function() {
 		var self = this;
@@ -78,14 +79,7 @@ Module.register("MMM-SleepIQControl", {
 
 	getDom: function() {
 		var self = this;
-
-		/** To-do
-		 * Add UI components
-		 * Update components using global data
-		 * Add Actions to Components
-		 * Refresh ui data upon action completion
-		 */
-
+		var c, r, t, b;
 		// create element wrapper for show into the module
 		var wrapper = document.createElement("div");
 		if (this.foundationError === true) {
@@ -93,32 +87,54 @@ Module.register("MMM-SleepIQControl", {
 		}
 		// If this.dataRequest is not empty
 		else if (this.sleeperData) {
-			var wrapperDataRequest = document.createElement("div");
-			wrapperDataRequest.innerHTML = this.accountData.name;
-			var side = this.config.primarySleeper;
-			var currentPosition = this.foundationData.fsCurrentPositionPresetLeft
-			if (side === 'right') currentPosition = this.foundationData.fsCurrentPositionPresetRight
-			console.log("currentPosition: " + currentPosition);
-			var c, r, t, b;
+			//var wrapperDataRequest = document.createElement("div");
 			t = document.createElement('table');
-
-			//row 1
 			r = t.insertRow(0);
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
-			if (this.config.primarySleeper === 'right') {
-					c.innerHTML = "<span class='sleeperdetails'>Sleeper: " + this.sleeperData[0].firstName + "</span>";
-			} else {
-					c.innerHTML = "<span class='sleeperdetails'>Sleeper: " + this.sleeperData[1].firstName + "</span>";
-			}
+			c.appendChild(this.addSleeperButton(this.sleeperData[0], this.bedData.rightSide, 'right'));
 			c = r.insertCell(1);
 			c.setAttribute("class", "sleepIQControlCell");
-			if (this.config.primarySleeper === 'right') {
-					c.innerHTML = "<span class='sleeperdetails'>Sleep Number: " + this.bedData.rightSide.sleepNumber + "</span>";
+			c.innerHTML = "<span class='sleepIQTitle>" + this.accountData.name + "</span>";
+			/* wip
+			var input = document.createElement("input");
+			input.type='number';
+			input.setAttribute('min', 0);
+			input.setAttribute('max', 100);
+			input.setAttribute('step', 5);
+			input.setAttribute('id', 'stepNumber');
+			c.appendChild(input);
+			*/
+			c = r.insertCell(2);
+			c.setAttribute("class", "sleepIQControlCell");
+			c.appendChild(this.addSleeperButton(this.sleeperData[1], this.bedData.leftSide, 'left'));
 
-			} else {
-			    c.innerHTML = "<span class='sleeperdetails'>Sleep Number: " + this.bedData.leftSide.sleepNumber + "</span>";
-		  }
+			//get foundations current position for current user
+			var side = this.config.primarySleeper;
+			var currentPosition = this.foundationData.fsCurrentPositionPresetLeft;
+			if (side === 'right') currentPosition = this.foundationData.fsCurrentPositionPresetRight;
+			console.log("currentPosition: " + currentPosition);
+
+			//row 1
+			r = t.insertRow(1);
+			/* wip
+			c = r.insertCell(0);
+			c.setAttribute("class", "sleepIQControlCell");
+			c.appendChild(this.addActionButton("Head"));
+			c = r.insertCell(1);
+			c.setAttribute("class", "sleepIQControlCell");
+			c.appendChild(this.addActionButton("Feet"));
+			c = r.insertCell(2);
+			c.setAttribute("class", "sleepIQControlCell");
+			c.appendChild(this.addActionButton("Firmness"));
+			c = r.insertCell(3);
+			c.setAttribute("class", "sleepIQControlCell");
+			c.appendChild(this.addDirectionButton("Up"));
+			c = r.insertCell(4);
+			c.setAttribute("class", "sleepIQControlCell");
+			c.appendChild(this.addDirectionButton("Down"));
+			*/
+
 			/**
 				FAVORITE = 1
 				READ = 2
@@ -128,7 +144,7 @@ Module.register("MMM-SleepIQControl", {
 				SNORE = 6
 			*/
 			//row 2
-			r = t.insertRow(1);
+			r = t.insertRow(2);
 
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
@@ -143,7 +159,7 @@ Module.register("MMM-SleepIQControl", {
 			c.appendChild(this.addButton("Watch TV", 3, currentPosition));
 
 			//row 3
-			r = t.insertRow(2);
+			r = t.insertRow(3);
 
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
@@ -157,13 +173,44 @@ Module.register("MMM-SleepIQControl", {
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Snore", 6, currentPosition));
 
-			wrapper.appendChild(wrapperDataRequest);
+			//wrapper.appendChild(wrapperDataRequest);
 			wrapper.appendChild(t);
 
 
 		}
 
 		return wrapper;
+	},
+
+	addActionButton: function(buttonType) {
+		var b = document.createElement("button");
+		b.innerHTML = buttonType;
+		b.addEventListener("click", () => this.runAction(buttonType));
+		b.setAttribute("id", buttonType + "ActionButton");
+		var currentActionCSS = '';
+		if (buttonType === this.currentAction) currentActionCSS = 'currentAction '
+		b.setAttribute("class", currentActionCSS + "actionButton");
+		return b;
+	},
+
+	addDirectionButton: function(buttonType) {
+		var b = document.createElement("button");
+		b.innerHTML = buttonType;
+		b.addEventListener("click", () => this.updateStepNumber(buttonType));
+		b.setAttribute("id", buttonType + "DirectionButton");
+		b.setAttribute("class", "actionButton");
+		return b;
+	},
+
+	addSleeperButton: function(sleeper, bedside, side) {
+		var b = document.createElement("button");
+		b.innerHTML = sleeper.firstName + "<br />" + bedside.sleepNumber;
+		b.addEventListener("click", () => this.setPrimarySleeper(side));
+		b.setAttribute("id", side + "SleeperButton");
+		var currentSleeper = '';
+		if (side === this.config.primarySleeper) currentSleeper = 'currentSleeper '
+		b.setAttribute("class", currentSleeper + "platformButton");
+		return b;
 	},
 
 	addButton: function(innerHtml, value, currentPosition) {
@@ -180,6 +227,19 @@ Module.register("MMM-SleepIQControl", {
 	adjustPlatform: function(level) {
 		console.log("Adjust platform to " + level);
 		this.sendSocketNotification("MMM-SleepIQControl_USER_ACTION", level)
+	},
+
+	setPrimarySleeper: function(side) {
+		this.config.primarySleeper = side;
+		this.updateDom();
+	},
+
+	runAction: function(action) {
+		console.log(action);
+	},
+
+	updateStepNumber: function(action) {
+		console.log(action);
 	},
 
 	getScripts: function() {
