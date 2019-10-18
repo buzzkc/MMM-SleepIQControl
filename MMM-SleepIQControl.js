@@ -231,6 +231,7 @@ Module.register("MMM-SleepIQControl", {
 
 	setPrimarySleeper: function(side) {
 		this.config.primarySleeper = side;
+		this.sendConfig();
 		this.updateDom();
 	},
 
