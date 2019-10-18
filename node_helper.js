@@ -35,6 +35,9 @@ module.exports = NodeHelper.create({
 					this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 				});
 		}
+		if (notification === "MMM-SleepIQControl_UPDATE_CONFIG") {
+			this.config = payload;
+		}
 		if (notification === "MMM-SleepIQControl_GET_DATA") {
 			this.getAccountData();
 		}

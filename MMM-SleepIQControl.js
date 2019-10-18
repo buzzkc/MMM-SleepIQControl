@@ -46,6 +46,10 @@ Module.register("MMM-SleepIQControl", {
 		this.sendSocketNotification('MMM-SleepIQControl_SEND_CONFIG', this.config);
 	},
 
+	updateConfig: function() {
+		this.sendSocketNotification('MMM-SleepIQControl_UPDATE_CONFIG', this.config);
+	},
+
 	/*
 	 * getData
 	 * function example return data and show it in the module wrapper
@@ -204,7 +208,7 @@ Module.register("MMM-SleepIQControl", {
 
 	addSleeperButton: function(sleeper, bedside, side) {
 		var b = document.createElement("button");
-		b.innerHTML = sleeper.firstName + "<br />" + bedside.sleepNumber;
+		b.innerHTML = "<span class='sleeperName'>" +sleeper.firstName + "</span><br><span class='sleepNumber'>" + bedside.sleepNumber + "</span>";
 		b.addEventListener("click", () => this.setPrimarySleeper(side));
 		b.setAttribute("id", side + "SleeperButton");
 		var currentSleeper = '';
@@ -231,7 +235,7 @@ Module.register("MMM-SleepIQControl", {
 
 	setPrimarySleeper: function(side) {
 		this.config.primarySleeper = side;
-		this.sendConfig();
+		this.updateConfig();
 		this.updateDom();
 	},
 
