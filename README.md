@@ -3,7 +3,8 @@ This is a module for the [MagicMirror²](https://github.com/MichMich/MagicMirror
 
 A MagicMirror module for controlling sleep number beds on a touch screen.
 
-![](./images/MMM-SleepIQControl.PNG)
+![](./images/MMM-SleepIQControl.png)
+
 
 ## Installation
 ### Setup the MagicMirror module
