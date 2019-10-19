@@ -62,3 +62,11 @@
 .sleepIQControlCell {
 	width: 33%;
 }
+
+.sleeperName {
+	font-size: 14px;
+}
+
+.sleepNumber {
+	padding-top: 10px;
+}
