@@ -83,7 +83,7 @@ body {
 
 ## Future enhancements
 * Add SleepNumber adjustment (duh)
-* Add Sleeper selector
+* ~~Add Sleeper selector~~
 * Add Foot warmer options
 * Add Massage options
 * Add Light options
