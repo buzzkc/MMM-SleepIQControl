@@ -3,8 +3,7 @@ This is a module for the [MagicMirror²](https://github.com/MichMich/MagicMirror
 
 A MagicMirror module for controlling sleep number beds on a touch screen.
 
-![](./images/MMM-SleepIQControl.png)
-
+![](./images/MMM-SleepIQControl.PNG)
 
 ## Installation
 ### Setup the MagicMirror module
@@ -40,7 +39,7 @@ var config = {
 | `password`        | *Required* Your password to login to sleepIQ
 | `title`           | *Optional* Title for the module
 | `updateInterval`  | *Optional* Update frequency, default: 300000 <*Int*> (5 minutes)
-| `primarySleeper`  | *Optional* Primary Sleeper to display, 'left' or 'right', default: 'left' 
+| `primarySleeper`  | *Optional* Primary Sleeper to display, 'left' or 'right', default: 'left'
 |                   |
 
 ## Known Issues
@@ -90,4 +89,4 @@ body {
 
 ## Thanks To
 * MichMich for developing [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
-* DeeeeLAN for the [API.js](https://github.com/DeeeeLAN/homebridge-sleepiq/blob/master/API.js) library 
+* DeeeeLAN for the [API.js](https://github.com/DeeeeLAN/homebridge-sleepiq/blob/master/API.js) library
