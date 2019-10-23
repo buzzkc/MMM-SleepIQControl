@@ -26,8 +26,8 @@ Module.register("MMM-SleepIQControl", {
 	sleeperData: null,
 	currentAction: 'Firmness',
 	currentActionValue: null,
-	currentFootwarmerTemp: 0,
-	currentFootwarmerTimer: 0,
+	currentFootwarmerTemp: null,
+	currentFootwarmerTimer: null,
 
 	start: function() {
 		var self = this;
@@ -367,6 +367,10 @@ Module.register("MMM-SleepIQControl", {
 
 	setPrimarySleeper: function(side) {
 		this.config.primarySleeper = side;
+		this.currentFootwarmerTemp = null;
+		this.currentFootwarmerTimer = null;
+		this.currentAction = 'Firmness';
+		this.currentActionValue = null;
 		this.updateConfig();
 		this.updateDom();
 	},
