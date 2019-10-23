@@ -22,8 +22,12 @@ Module.register("MMM-SleepIQControl", {
 	foundationSystemData: null,
 	foundationData: null,
 	foundationError: true,
+	footwarmerData: null,
 	sleeperData: null,
-	currentAction: null,
+	currentAction: 'Firmness',
+	currentActionValue: null,
+	currentFootwarmerTemp: 0,
+	currentFootwarmerTimer: 0,
 
 	start: function() {
 		var self = this;
@@ -91,27 +95,65 @@ Module.register("MMM-SleepIQControl", {
 		}
 		// If this.dataRequest is not empty
 		else if (this.sleeperData) {
+
+			if (this.currentActionValue === null) {
+				this.currentActionValue = this.bedData[this.config.primarySleeper +'Side'].sleepNumber;
+			}
 			//var wrapperDataRequest = document.createElement("div");
 			t = document.createElement('table');
 			r = t.insertRow(0);
 			c = r.insertCell(0);
+
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addSleeperButton(this.sleeperData[0], this.bedData.rightSide, 'right'));
+
 			c = r.insertCell(1);
 			c.setAttribute("class", "sleepIQControlCell");
-			c.innerHTML = "<span class='sleepIQTitle>" + this.accountData.name + "</span>";
-			/* wip
-			var input = document.createElement("input");
-			input.type='number';
-			input.setAttribute('min', 0);
-			input.setAttribute('max', 100);
-			input.setAttribute('step', 5);
-			input.setAttribute('id', 'stepNumber');
-			c.appendChild(input);
-			*/
+			//c.innerHTML = "<span class='sleepIQTitle>" + this.accountData.name + "</span>";
+
 			c = r.insertCell(2);
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addSleeperButton(this.sleeperData[1], this.bedData.leftSide, 'left'));
+
+			if (this.currentAction === 'Warmer') {
+				if (this.currentFootwarmerTemp === null )	this.currentFootwarmerTemp = this.footwarmerData['footWarmingStatus' + this.toTitleCase(this.config.primarySleeper)];
+				c = r.insertCell(3);
+				c.setAttribute("class", "sleepIQControlCell");
+				c.colSpan = 2;
+				var tempGroup = document.createElement("div");
+				tempGroup.setAttribute('id', 'radio-toolbar');
+				tempGroup.setAttribute('class', 'radio-toolbar');
+				tempGroup.appendChild(this.addRadio('Off', 0));
+				tempGroup.appendChild(this.addTempLabel('Off', 0));
+				tempGroup.appendChild(this.addRadio('Low', 31));
+				tempGroup.appendChild(this.addTempLabel('Low', 31));
+				tempGroup.appendChild(this.addRadio('Med', 57));
+				tempGroup.appendChild(this.addTempLabel('Med', 57));
+				tempGroup.appendChild(this.addRadio('Hi', 72));
+				tempGroup.appendChild(this.addTempLabel('Hi', 72));
+				c.appendChild(tempGroup);
+
+				//<div class="radio-toolbar">
+			} else {
+				c = r.insertCell(3);
+				c.setAttribute("class", "sleepIQControlCell");
+				var input = document.createElement("input");
+				input.type='number';
+				input.setAttribute('min', 0);
+				input.setAttribute('max', 100);
+				input.setAttribute('step', 5);
+				input.setAttribute('id', 'stepNumber');
+				input.setAttribute('class', 'stepNumber');
+				input.value = this.currentActionValue;
+				c.appendChild(input);
+				//c.appendChild(document.createElement("BR"));
+				c.appendChild(this.addActionButton("Set"));
+				c.colSpan = 2;
+			}
+
+
+			//c = r.insertCell(4);
+			//c.setAttribute("class", "sleepIQControlCell");
 
 			//get foundations current position for current user
 			var side = this.config.primarySleeper;
@@ -119,26 +161,7 @@ Module.register("MMM-SleepIQControl", {
 			if (side === 'right') currentPosition = this.foundationData.fsCurrentPositionPresetRight;
 			console.log("currentPosition: " + currentPosition);
 
-			//row 1
-			r = t.insertRow(1);
-			/* wip
-			c = r.insertCell(0);
-			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addActionButton("Head"));
-			c = r.insertCell(1);
-			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addActionButton("Feet"));
-			c = r.insertCell(2);
-			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addActionButton("Firmness"));
-			c = r.insertCell(3);
-			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addDirectionButton("Up"));
-			c = r.insertCell(4);
-			c.setAttribute("class", "sleepIQControlCell");
-			c.appendChild(this.addDirectionButton("Down"));
-			*/
-
+			//row 2
 			/**
 				FAVORITE = 1
 				READ = 2
@@ -148,7 +171,7 @@ Module.register("MMM-SleepIQControl", {
 				SNORE = 6
 			*/
 			//row 2
-			r = t.insertRow(2);
+			r = t.insertRow(1);
 
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
@@ -162,8 +185,42 @@ Module.register("MMM-SleepIQControl", {
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Watch TV", 3, currentPosition));
 
+			if (this.currentAction === 'Warmer') {
+				if (this.currentFootwarmerTimer === null ) this.currentFootwarmerTimer = this.footwarmerData['footWarmingTimer' + this.toTitleCase(this.config.primarySleeper)];
+				c = r.insertCell(3);
+				c.setAttribute("class", "sleepIQControlCell");
+				c.colSpan = 2;
+				var tempGroup = document.createElement("div");
+				tempGroup.setAttribute('id', 'radio-toolbar-temp');
+				tempGroup.setAttribute('class', 'radio-toolbar-temp');
+				tempGroup.appendChild(this.addRadioTimer('Off', 0));
+				tempGroup.appendChild(this.addTimerLabel('Off', 0));
+				//tempGroup.appendChild(this.addRadioTimer('1h', 60));
+			//	tempGroup.appendChild(this.addLabel('1h'));
+				tempGroup.appendChild(this.addRadioTimer('2h', 120));
+				tempGroup.appendChild(this.addTimerLabel('2h', 120));
+				//tempGroup.appendChild(this.addRadioTimer('4h', 240));
+				//tempGroup.appendChild(this.addLabel('4h'));
+				tempGroup.appendChild(this.addRadioTimer('6h', 360));
+				tempGroup.appendChild(this.addTimerLabel('6h', 360));
+
+				c.appendChild(tempGroup);
+				c.appendChild(this.addActionButton("Go"));
+
+
+			} else {
+				c = r.insertCell(3);
+				c.setAttribute("class", "sleepIQControlCell");
+				c.appendChild(this.addDirectionButton("Up"));
+
+				c = r.insertCell(4);
+				c.setAttribute("class", "sleepIQControlCell");
+				c.appendChild(this.addDirectionButton("Down"));
+
+			}
+
 			//row 3
-			r = t.insertRow(3);
+			r = t.insertRow(2);
 
 			c = r.insertCell(0);
 			c.setAttribute("class", "sleepIQControlCell");
@@ -176,6 +233,16 @@ Module.register("MMM-SleepIQControl", {
 			c = r.insertCell(2);
 			c.setAttribute("class", "sleepIQControlCell");
 			c.appendChild(this.addButton("Snore", 6, currentPosition));
+
+			c = r.insertCell(3);
+			c.setAttribute("class", "sleepIQControlCell");
+			c.appendChild(this.addActionButton("Head"));
+			c.appendChild(this.addActionButton("Firmness"));
+
+			c = r.insertCell(4);
+			c.setAttribute("class", "sleepIQControlCell");
+			c.appendChild(this.addActionButton("Foot"));
+			c.appendChild(this.addActionButton("Warmer"));
 
 			//wrapper.appendChild(wrapperDataRequest);
 			wrapper.appendChild(t);
@@ -200,7 +267,7 @@ Module.register("MMM-SleepIQControl", {
 	addDirectionButton: function(buttonType) {
 		var b = document.createElement("button");
 		b.innerHTML = buttonType;
-		b.addEventListener("click", () => this.updateStepNumber(buttonType));
+		b.addEventListener("click", () => this.updateStepNumber(buttonType, 1));
 		b.setAttribute("id", buttonType + "DirectionButton");
 		b.setAttribute("class", "actionButton");
 		return b;
@@ -228,6 +295,71 @@ Module.register("MMM-SleepIQControl", {
 		return b;
 	},
 
+	addRadio: function(label, value) {
+		var i = document.createElement("input");
+		i.setAttribute('id', 'radioFootwarmer' + this.toTitleCase(label));
+		i.setAttribute('name', 'radioFootwarmer');
+		i.setAttribute('type', 'radio');
+		i.setAttribute('value', value);
+		i.addEventListener("click", () => this.setFootwarmerTemp(value));
+
+		if (this.currentFootwarmerTemp === value) {
+			i.setAttribute('checked', 'checked');
+		}
+		return i;
+	},
+
+	setFootwarmerTemp: function(value) {
+		this.currentFootwarmerTemp = value;
+		this.updateDom();
+	},
+
+	addRadioTimer: function(label, value) {
+		var i = document.createElement("input");
+		i.setAttribute('id', 'radioFootwarmer' + this.toTitleCase(label));
+		i.setAttribute('name', 'radioFootwarmerTemp');
+		i.setAttribute('type', 'radio');
+		i.setAttribute('value', value);
+		i.addEventListener("click", () => this.setFootwarmerTimer(value));
+		if (this.currentFootwarmerTimer === value
+			|| (value == 60 && this.currentFootwarmerTimer > 0 && this.currentFootwarmerTimer < 60)
+			|| (value == 120 && this.currentFootwarmerTimer > 60 && this.currentFootwarmerTimer < 120)
+			|| (value == 240 && this.currentFootwarmerTimer > 120 && this.currentFootwarmerTimer < 240)
+			|| (value == 360 && this.currentFootwarmerTimer > 240 && this.currentFootwarmerTimer < 360)
+			) {
+			i.setAttribute('checked', 'checked');
+		}
+		return i;
+	},
+
+	setFootwarmerTimer: function(value) {
+		this.currentFootwarmerTimer = value;
+		this.updateDom();
+	},
+
+	addTempLabel: function(label, value) {
+		var l = document.createElement('label');
+		l.setAttribute('for', label);
+		l.innerHTML = this.toTitleCase(label);
+		l.addEventListener("click", () => this.setFootwarmerTemp(value));
+		return l;
+	},
+
+	addTimerLabel: function(label, value) {
+		var l = document.createElement('label');
+		l.setAttribute('for', label);
+		l.innerHTML = this.toTitleCase(label);
+		l.addEventListener("click", () => this.setFootwarmerTimer(value));
+		return l;
+	},
+
+	addOption: function(text, value) {
+		var option = document.createElement("option");
+		option.text = text;
+		option.value = value;
+		return option;
+	},
+
 	adjustPlatform: function(level) {
 		console.log("Adjust platform to " + level);
 		this.sendSocketNotification("MMM-SleepIQControl_USER_ACTION", level)
@@ -240,11 +372,53 @@ Module.register("MMM-SleepIQControl", {
 	},
 
 	runAction: function(action) {
+		if (action === 'Head') {
+			this.currentAction = 'Head';
+			this.currentActionValue = parseInt(this.foundationData['fs' + this.toTitleCase(this.config.primarySleeper) + 'HeadPosition'],16);
+
+		} else if (action === 'Foot') {
+			this.currentAction = 'Foot';
+			this.currentActionValue = parseInt(this.foundationData['fs' + this.toTitleCase(this.config.primarySleeper) + 'FootPosition'],16);
+
+		} else if (action === 'Firmness') {
+			this.currentAction = 'Firmness';
+			this.currentActionValue = this.bedData[this.config.primarySleeper +'Side'].sleepNumber;
+
+		} else if (action === 'Warmer') {
+			this.currentAction = 'Warmer';
+			console.log(this.footwarmerData['footWarmingStatus' + this.toTitleCase(this.config.primarySleeper)])
+			console.log(this.footwarmerData['footWarmingTimer' + this.toTitleCase(this.config.primarySleeper)])
+			this.currentActionValue = this.footwarmerData['footWarmingStatus' + this.toTitleCase(this.config.primarySleeper)];
+
+		} else if (action === 'Set') {
+			//call function that calls correct socket notification based on currentAction and value of stepNumber.
+		} else if (action === 'Go') {
+			//send socket notification to turn on footwarmer.
+			var settings = {side: this.config.primarySleeper, temp: this.currentFootwarmerTemp, duration: this.currentFootwarmerTimer};
+			console.log(settings);
+			this.sendSocketNotification('MMM-SleepIQControl_FOOTWARMER_ACTION', settings);
+		}
+
+		console.log(this.currentAction);
+		this.updateDom();
+	},
+
+	updateStepNumber: function(action, value) {
+		if (action === "Up") {
+			document.getElementById("stepNumber").stepUp(value);
+		} else {
+			document.getElementById("stepNumber").stepDown(value);
+		}
+
 		console.log(action);
 	},
 
-	updateStepNumber: function(action) {
-		console.log(action);
+	toTitleCase: function(str) {
+		str = str.toLowerCase().split(' ');
+		for (var i = 0; i < str.length; i++) {
+			str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+		}
+		return str.join(' ');
 	},
 
 	getScripts: function() {
@@ -310,6 +484,12 @@ Module.register("MMM-SleepIQControl", {
 			console.log(this.foundationData);
 		}
 
+		if (notification === "MMM-SleepIQControl_FOOTWARMER_DATA_RETURNED") {
+			this.footwarmerData = payload;
+			console.log("Footwarmer Data: ");
+			console.log(this.footwarmerData);
+		}
+
 		if (notification === "MMM-SleepIQControl_FOUNDATION_SYS_DATA_RETURNED") {
 			this.foundationSystemData = payload;
 			this.foundationError = true;
@@ -335,10 +515,16 @@ Module.register("MMM-SleepIQControl", {
 			this.sendSocketNotification('MMM-SleepIQControl_GET_DATA', null);
 		}
 
+		if (notification === "MMM-SleepIQControl_FOOTWARMER_ACTION_RETURNED") {
+			console.log("footwarmer results");
+			console.log(payload);
+		}
+
 		if (notification === "MMM-SleepIQControl_Console") {
 			console.log("Output: ");
 			console.log(payload);
 			//this.bed = payload.beds[0];
 		}
+
 	},
 });

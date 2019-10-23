@@ -45,6 +45,13 @@ module.exports = NodeHelper.create({
 		if (notification === "MMM-SleepIQControl_USER_ACTION") {
 			this.setUserAction(payload);
 		}
+
+		if (notification === "MMM-SleepIQControl_FOOTWARMER_ACTION") {
+			var settings = [];
+			settings = payload;
+
+			this.setFootwarmer(settings);
+		}
 	},
 
 	getAccountData: function () {
@@ -88,11 +95,22 @@ module.exports = NodeHelper.create({
 		this.api.foundationStatus()
 			.then((success) => {
 				this.sendSocketNotification("MMM-SleepIQControl_FOUNDATION_DATA_RETURNED", JSON.parse(success));
-				this.getSleeper();
+				this.getFootwarmerStatus();
 			})
 			.catch((err) => {
 				this.sendSocketNotification("MMM-SleepIQControl_Console", JSON.parse(err));
 				this.sendSocketNotification("MMM-SleepIQControl_FOUNDATION_DATA_ERROR", JSON.parse(err));
+			});
+	},
+
+	getFootwarmerStatus: function () {
+		this.api.footwarmerStatus()
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_FOOTWARMER_DATA_RETURNED", JSON.parse(success));
+				this.getSleeper();
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", JSON.parse(err));
 			});
 	},
 
@@ -114,6 +132,23 @@ module.exports = NodeHelper.create({
 		this.api.preset(side, action)
 			.then((success) => {
 				this.sendSocketNotification("MMM-SleepIQControl_FOUNDATION_ACTION_RETURNED", JSON.parse(success));
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+			});
+	},
+
+	setFootwarmer: function(settings) {
+		var side = settings.side;
+		var temp = settings.temp;
+		var duration = settings.duration;
+
+		this.sendSocketNotification("MMM-SleepIQControl_Console", settings);
+
+
+		this.api.footwarmer(side, temp, duration)
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_FOOTWARMER_ACTION_RETURNED", JSON.parse(success));
 			})
 			.catch((err) => {
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);

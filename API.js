@@ -603,6 +603,58 @@ class API {
         */
     }
 
+    footwarmerStatus (callback=null) {
+        return request({
+            method: 'GET',
+            uri: 'https://api.sleepiq.sleepnumber.com/rest/bed/'+this.bedID+'/foundation/footwarming',
+            qs: {_k: this.key}
+        }, function(err, resp, data) {
+            if (err) {
+                return callback("footwarmerStatus GET failed. Error:",err);
+            }
+            this.json = JSON.parse(data);
+            if (callback) {
+                callback(data);
+            }
+        }.bind(this))
+
+        /*
+          {footWarmingStatusLeft: 57, footWarmingStatusRight: 0, footWarmingTimerLeft: 30, footWarmingTimerRight: 0}
+        */
+    }
+
+    // Side is 'Left' or 'Right', temp value of 0 (off), 31 (low), 57 (med), or 72 (high), duration value of 0 to 360 (minutes)
+    footwarmer (side, temp, duration, callback=null) {
+      var body = '{footWarmingTemp' + this.toTitleCase(side) + ': ' + temp + ', footWarmingTimer' + this.toTitleCase(side) + ': ' + duration + '}';
+      return request({
+              method: 'PUT',
+              uri: 'https://api.sleepiq.sleepnumber.com/rest/bed/'+this.bedID+'/foundation/footwarming',
+              qs: {_k: this.key},
+              body: body
+          },
+          function(err, resp, data) {
+              if (err) {
+                  return callback("footwarmer PUT failed. Error:",err);
+              }
+              this.json = JSON.parse(data);
+              if (callback) {
+                  callback(data);
+              }
+              // console.log(JSON.stringify(this.json, null, 3))
+          }.bind(this))
+
+        /*
+          {}
+        */
+    }
+
+    toTitleCase (str) {
+  		str = str.toLowerCase().split(' ');
+  		for (var i = 0; i < str.length; i++) {
+  			str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+  		}
+  		return str.join(' ');
+  	}
 
     sleeperData (date, interval) {
         // date format: 'YYYY-MM-DD'
