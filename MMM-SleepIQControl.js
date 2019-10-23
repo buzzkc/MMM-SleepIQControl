@@ -322,10 +322,8 @@ Module.register("MMM-SleepIQControl", {
 		i.setAttribute('value', value);
 		i.addEventListener("click", () => this.setFootwarmerTimer(value));
 		if (this.currentFootwarmerTimer === value
-			|| (value == 60 && this.currentFootwarmerTimer > 0 && this.currentFootwarmerTimer < 60)
-			|| (value == 120 && this.currentFootwarmerTimer > 60 && this.currentFootwarmerTimer < 120)
-			|| (value == 240 && this.currentFootwarmerTimer > 120 && this.currentFootwarmerTimer < 240)
-			|| (value == 360 && this.currentFootwarmerTimer > 240 && this.currentFootwarmerTimer < 360)
+			|| (value == 120 && this.currentFootwarmerTimer > 0 && this.currentFootwarmerTimer < 120)
+			|| (value == 360 && this.currentFootwarmerTimer > 120 && this.currentFootwarmerTimer < 360)
 			) {
 			i.setAttribute('checked', 'checked');
 		}
@@ -396,6 +394,14 @@ Module.register("MMM-SleepIQControl", {
 
 		} else if (action === 'Set') {
 			//call function that calls correct socket notification based on currentAction and value of stepNumber.
+			if (this.currentAction === 'Firmness') {
+				this.sendSocketNotification("MMM-SleepIQControl_SLEEPNUMBER_ACTION", document.getElementById("stepNumber").value)
+			} else if (this.currentAction ==='Head') {
+				this.sendSocketNotification("MMM-SleepIQControl_HEAD_ACTION", document.getElementById("stepNumber").value)
+			} else if (this.currentAction ==='Foot') {
+				this.sendSocketNotification("MMM-SleepIQControl_FOOT_ACTION", document.getElementById("stepNumber").value)
+			}
+
 		} else if (action === 'Go') {
 			//send socket notification to turn on footwarmer.
 			var settings = {side: this.config.primarySleeper, temp: this.currentFootwarmerTemp, duration: this.currentFootwarmerTimer};
@@ -520,14 +526,27 @@ Module.register("MMM-SleepIQControl", {
 		}
 
 		if (notification === "MMM-SleepIQControl_FOOTWARMER_ACTION_RETURNED") {
-			console.log("footwarmer results");
-			console.log(payload);
+			this.currentFootwarmerTemp = null;
+			this.currentFootwarmerTimer = null;
+			this.getData();
 		}
+
+		if (notification === "MMM-SleepIQControl_SLEEPNUMBER_ACTION_RETURNED") {
+			this.getData();
+		}
+
+		if (notification === "MMM-SleepIQControl_HEAD_ACTION_RETURNED") {
+			this.getData();
+		}
+
+		if (notification === "MMM-SleepIQControl_FOOT_ACTION_RETURNED") {
+			this.getData();
+		}
+
 
 		if (notification === "MMM-SleepIQControl_Console") {
 			console.log("Output: ");
 			console.log(payload);
-			//this.bed = payload.beds[0];
 		}
 
 	},

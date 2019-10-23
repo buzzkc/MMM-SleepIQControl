@@ -46,11 +46,23 @@ module.exports = NodeHelper.create({
 			this.setUserAction(payload);
 		}
 
+		if (notification === "MMM-SleepIQControl_HEAD_ACTION") {
+			this.setHeadAction(payload);
+		}
+
+		if (notification === "MMM-SleepIQControl_FOOT_ACTION") {
+			this.setFootAction(payload);
+		}
+
 		if (notification === "MMM-SleepIQControl_FOOTWARMER_ACTION") {
 			var settings = [];
 			settings = payload;
 
 			this.setFootwarmer(settings);
+		}
+
+		if (notification === "MMM-SleepIQControl_SLEEPNUMBER_ACTION") {
+			this.setSleepNumber(payload);
 		}
 	},
 
@@ -138,13 +150,36 @@ module.exports = NodeHelper.create({
 			});
 	},
 
+	setHeadAction: function(num) {
+		var side = 'R';
+		if (this.config.primarySleeper === 'left') side = 'L';
+
+		this.api.adjust (side, 'H', num)
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_HEAD_ACTION_RETURNED", JSON.parse(success));
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+			});
+	},
+
+	setFootAction: function(num) {
+		var side = 'R';
+		if (this.config.primarySleeper === 'left') side = 'L';
+
+		this.api.adjust (side, 'F', num)
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_FOOT_ACTION_RETURNED", JSON.parse(success));
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+			});
+	},
+
 	setFootwarmer: function(settings) {
-		var side = settings.side;
+		var side = this.config.primarySleeper;
 		var temp = settings.temp;
 		var duration = settings.duration;
-
-		this.sendSocketNotification("MMM-SleepIQControl_Console", settings);
-
 
 		this.api.footwarmer(side, temp, duration)
 			.then((success) => {
@@ -153,6 +188,20 @@ module.exports = NodeHelper.create({
 			.catch((err) => {
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
+	},
+
+	setSleepNumber: function (num) {
+		var side = 'L';
+		if (this.config.primarySleeper === 'right') side = 'R';
+
+		this.api.sleepNumber(side, num)
+			.then((success) => {
+				this.sendSocketNotification("MMM-SleepIQControl_SLEEPNUMBER_ACTION_RETURNED", JSON.parse(success));
+			})
+			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
+			});
+
 	},
 
 	// Example function send notification test
