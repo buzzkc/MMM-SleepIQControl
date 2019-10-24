@@ -151,6 +151,11 @@ Module.register("MMM-SleepIQControl", {
 				c.colSpan = 2;
 			}
 
+			//this row is just a hack to move all the buttons to the left to fit my screen.
+			c = r.insertCell(4);
+			c.rowSpan = 3;
+			c.innerHTML = '&nbsp;';
+			c.setAttribute('class', 'spacerRow');
 
 			//c = r.insertCell(4);
 			//c.setAttribute("class", "sleepIQControlCell");
@@ -211,11 +216,11 @@ Module.register("MMM-SleepIQControl", {
 			} else {
 				c = r.insertCell(3);
 				c.setAttribute("class", "sleepIQControlCell");
-				c.appendChild(this.addDirectionButton("Up"));
+				c.appendChild(this.addDirectionButton("Down"));
 
 				c = r.insertCell(4);
 				c.setAttribute("class", "sleepIQControlCell");
-				c.appendChild(this.addDirectionButton("Down"));
+				c.appendChild(this.addDirectionButton("Up"));
 
 			}
 
