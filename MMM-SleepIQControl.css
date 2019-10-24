@@ -51,7 +51,7 @@
 }
 
 .platformButton IMG{
-	width: 70px;
+	width: 60px;
 	height: 40px;
 }
 
@@ -71,8 +71,8 @@
 .stepNumber {
   background: transparent;
   border: none;
-  border-bottom: 1px solid gray;
   color: #fff;
+  text-align: center;
 }
 
 .stepNumber input[type=number]::-webkit-inner-spin-button {

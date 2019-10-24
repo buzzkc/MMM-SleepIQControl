@@ -450,15 +450,11 @@ Module.register("MMM-SleepIQControl", {
 		};
 	},
 
-	processData: function(data) {
+	delayedRefresh: function() {
 		var self = this;
-		this.dataRequest = data;
-		if (this.loaded === false) { self.updateDom(self.config.animationSpeed) ; }
-		this.loaded = true;
-
-		// the data if load
-		// send notification to helper
-		this.sendSocketNotification("MMM-SleepIQControl-NOTIFICATION_TEST", data);
+		setTimeout(function() {
+			self.getData();
+		}, 3000);
 	},
 
 	// socketNotificationReceived from helper
@@ -528,19 +524,19 @@ Module.register("MMM-SleepIQControl", {
 		if (notification === "MMM-SleepIQControl_FOOTWARMER_ACTION_RETURNED") {
 			this.currentFootwarmerTemp = null;
 			this.currentFootwarmerTimer = null;
-			this.getData();
+			this.delayedRefresh();
 		}
 
 		if (notification === "MMM-SleepIQControl_SLEEPNUMBER_ACTION_RETURNED") {
-			this.getData();
+			this.delayedRefresh();
 		}
 
 		if (notification === "MMM-SleepIQControl_HEAD_ACTION_RETURNED") {
-			this.getData();
+			this.delayedRefresh();
 		}
 
 		if (notification === "MMM-SleepIQControl_FOOT_ACTION_RETURNED") {
-			this.getData();
+			this.delayedRefresh();
 		}
 
 
