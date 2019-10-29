@@ -5,6 +5,8 @@ A MagicMirror module for controlling sleep number beds on a touch screen.
 
 ![](./images/MMM-SleepIQControl.png)
 
+![](./images/MMM-SleepIQControl2.png)
+
 
 ## Installation
 ### Setup the MagicMirror module
@@ -82,9 +84,9 @@ body {
 ```
 
 ## Future enhancements
-* Add SleepNumber adjustment (duh)
+* ~~Add SleepNumber adjustment (duh)~~
 * ~~Add Sleeper selector~~
-* Add Foot warmer options
+* ~~Add Foot warmer options~~
 * Add Massage options
 * Add Light options
 
