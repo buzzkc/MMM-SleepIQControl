@@ -6,13 +6,11 @@
  */
 
 var NodeHelper = require("node_helper");
-var API = require('./API.js');
+var API = require("./API.js");
 var config;
 var api;
 
 module.exports = NodeHelper.create({
-
-
 
 	// Override socketNotificationReceived method.
 
@@ -138,8 +136,8 @@ module.exports = NodeHelper.create({
 	},
 
 	setUserAction: function(action) {
-		var side = 'R';
-		if (this.config.primarySleeper === 'left') side = 'L';
+		var side = "R";
+		if (this.config.primarySleeper === "left") {side = "L";}
 
 		this.api.preset(side, action)
 			.then((success) => {
@@ -151,10 +149,10 @@ module.exports = NodeHelper.create({
 	},
 
 	setHeadAction: function(num) {
-		var side = 'R';
-		if (this.config.primarySleeper === 'left') side = 'L';
+		var side = "R";
+		if (this.config.primarySleeper === "left") {side = "L";}
 
-		this.api.adjust (side, 'H', num)
+		this.api.adjust (side, "H", num)
 			.then((success) => {
 				this.sendSocketNotification("MMM-SleepIQControl_HEAD_ACTION_RETURNED", JSON.parse(success));
 			})
@@ -164,10 +162,10 @@ module.exports = NodeHelper.create({
 	},
 
 	setFootAction: function(num) {
-		var side = 'R';
-		if (this.config.primarySleeper === 'left') side = 'L';
+		var side = "R";
+		if (this.config.primarySleeper === "left") {side = "L";}
 
-		this.api.adjust (side, 'F', num)
+		this.api.adjust (side, "F", num)
 			.then((success) => {
 				this.sendSocketNotification("MMM-SleepIQControl_FOOT_ACTION_RETURNED", JSON.parse(success));
 			})
@@ -191,8 +189,8 @@ module.exports = NodeHelper.create({
 	},
 
 	setSleepNumber: function (num) {
-		var side = 'L';
-		if (this.config.primarySleeper === 'right') side = 'R';
+		var side = "L";
+		if (this.config.primarySleeper === "right") side = "R";
 
 		this.api.sleepNumber(side, num)
 			.then((success) => {
