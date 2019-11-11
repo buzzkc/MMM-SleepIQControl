@@ -465,6 +465,8 @@ Module.register("MMM-SleepIQControl", {
 
 	// socketNotificationReceived from helper
 	socketNotificationReceived: function (notification, payload) {
+		var self = this;
+
 		if(notification === "MMM-SleepIQControl-NOTIFICATION_TEST") {
 			// set dataNotification
 			this.dataNotification = payload;
@@ -474,6 +476,7 @@ Module.register("MMM-SleepIQControl", {
 		if (notification === "MMM-SleepIQControl_LOGIN_SUCCESS") {
 			console.log("Output: ");
 			console.log(payload);
+			this.loginErrorCount = 0;
 			this.scheduleUpdate(2000);
 		}
 
@@ -544,10 +547,18 @@ Module.register("MMM-SleepIQControl", {
 			if (payload.statusCode = 401) {
 				this.retryLogin();
 			}
-			else if (payload.Error.Code = 401) {
-				this.retryLogin();
-			} else {
+			else if (payload.Error.Code = 404) {
+				//wait 1 minute and retry login, but refresh giving foundation error
 				this.foundationError = true;
+				setTimeout(function() {
+					self.delayLoginRetry();
+				}, 1*60*1000);
+				this.updateDom();
+			} else {
+				//other error, refresh with foundation error
+				//todo - add other error messages.
+				this.foundationError = true;
+				this.updateDom();
 			}
 		}
 
