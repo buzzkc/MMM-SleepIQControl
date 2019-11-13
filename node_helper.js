@@ -74,6 +74,7 @@ module.exports = NodeHelper.create({
 				this.getFamilyStatus();
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 	},
@@ -87,6 +88,7 @@ module.exports = NodeHelper.create({
 				this.getFoundationStatus();
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 	},
@@ -98,6 +100,7 @@ module.exports = NodeHelper.create({
 				this.getFoundationStatus();
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 	},
@@ -121,6 +124,7 @@ module.exports = NodeHelper.create({
 				this.getSleeper();
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", JSON.parse(err));
 			});
 	},
@@ -131,6 +135,7 @@ module.exports = NodeHelper.create({
 				this.sendSocketNotification("MMM-SleepIQControl_SLEEPER_DATA_RETURNED", JSON.parse(success));
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 
@@ -145,6 +150,7 @@ module.exports = NodeHelper.create({
 				this.sendSocketNotification("MMM-SleepIQControl_FOUNDATION_ACTION_RETURNED", JSON.parse(success));
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 	},
@@ -158,6 +164,7 @@ module.exports = NodeHelper.create({
 				this.sendSocketNotification("MMM-SleepIQControl_HEAD_ACTION_RETURNED", JSON.parse(success));
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 	},
@@ -171,6 +178,7 @@ module.exports = NodeHelper.create({
 				this.sendSocketNotification("MMM-SleepIQControl_FOOT_ACTION_RETURNED", JSON.parse(success));
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 	},
@@ -185,6 +193,7 @@ module.exports = NodeHelper.create({
 				this.sendSocketNotification("MMM-SleepIQControl_FOOTWARMER_ACTION_RETURNED", JSON.parse(success));
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 	},
@@ -198,6 +207,7 @@ module.exports = NodeHelper.create({
 				this.sendSocketNotification("MMM-SleepIQControl_SLEEPNUMBER_ACTION_RETURNED", JSON.parse(success));
 			})
 			.catch((err) => {
+				this.sendSocketNotification("MMM-SleepIQControl_CONNECT_ERROR_RETURNED", err);
 				this.sendSocketNotification("MMM-SleepIQControl_Console", err);
 			});
 
