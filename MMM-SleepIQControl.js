@@ -110,7 +110,14 @@ Module.register("MMM-SleepIQControl", {
 
 			c = r.insertCell(1);
 			c.setAttribute("class", "sleepIQControlCell");
-			//c.innerHTML = "<span class='sleepIQTitle>" + this.accountData.name + "</span>";
+
+			c.innerHTML = "<div class='sleepIQTime' id='sn_time'></div>";
+
+			var update = function() {
+			    document.getElementById("sn_time")
+			    .innerHTML = moment().format('h:mm:ss a');
+			}
+			setInterval(update, 1000);
 
 			c = r.insertCell(2);
 			c.setAttribute("class", "sleepIQControlCell");
