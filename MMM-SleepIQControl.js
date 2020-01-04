@@ -115,7 +115,7 @@ Module.register("MMM-SleepIQControl", {
 
 			var update = function() {
 			    document.getElementById("sn_time")
-			    .innerHTML = moment().format('h:mm:ss a');
+			    .innerHTML = moment().format('h:mm a');
 			}
 			setInterval(update, 1000);
 
